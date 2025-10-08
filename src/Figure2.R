@@ -8,7 +8,7 @@ usedates = data.frame(startdate = as.POSIXct(c('2018-09-01'), tz = 'UTC')) |>
   mutate(enddate = startdate + days(75))
 
 # Read in TG GPS data from Matt
-tg = read_csv('data/tylg/tylg_daily_15day.csv') |> 
+tg = read_csv('data/gps/tylg_daily_15day-v2.csv') |> 
   select(datetime = time_mean, velocity_m_d = `velocity (m/d)`, z_median) |> 
   filter(datetime >= as.Date('2018-05-01') & datetime <= as.Date('2019-05-01')) 
 
