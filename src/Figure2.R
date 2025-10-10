@@ -18,7 +18,7 @@ tg <- tg %>%
   mutate(z_median_scaled = scales::rescale(z_median, to = range_velocity_all, from = range_z_all))
 
 p1 = ggplot(tg, aes(x = datetime)) +
-  geom_rect(inherit.aes = FALSE, data = data.frame( xmin = as.POSIXct('2018-09-05'), xmax = as.POSIXct('2018-10-22'), ymin = -Inf, ymax = Inf),
+  geom_rect(inherit.aes = FALSE, data = data.frame( xmin = as.POSIXct('2018-09-09'), xmax = as.POSIXct('2018-10-22'), ymin = -Inf, ymax = Inf),
             aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = '#ede3be', alpha = 0.5, color = 'black', linetype = 2, linewidth = 0.2) +
   # geom_line(aes(y = velocity_m_d), color = "#647587") +
   # geom_line(aes(y = z_median_scaled), color = "#a85c32") +
@@ -46,7 +46,7 @@ tg.date <- tg.date %>%
   mutate(z_median_scaled = scales::rescale(z_diff, to = range_velocity, from = range_z))
 
 p2 = ggplot(tg.date, aes(x = datetime)) +
-  geom_rect(inherit.aes = FALSE, data = data.frame( xmin = as.POSIXct('2018-09-05'), xmax = as.POSIXct('2018-10-22'), ymin = -Inf, ymax = Inf),
+  geom_rect(inherit.aes = FALSE, data = data.frame( xmin = as.POSIXct('2018-09-09'), xmax = as.POSIXct('2018-10-22'), ymin = -Inf, ymax = Inf),
             aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = '#ede3be', alpha = 0.1, color = 'black', linetype = 2) +
   geom_point(aes(y = velocity_m_d), color = "#647587", size = 0.3) +
   geom_point(aes(y = z_median_scaled), color = "#a85c32", size = 0.3) +
@@ -68,7 +68,7 @@ wlb.raw = read_csv('data/thermistor/wlb_tstring_w_20180901_20181115.csv')
 depths.west = rev(c(12.13, 13.57, 15.01, 16.45, 17.89, 19.33, 20.77, 22.21, 23.65, 25.09))
 
 p3 = ggplot(wlb.raw |> arrange(desc(temp_anomaly_C)), aes(x = dateTime, y = depth_m - temp_anomaly_C, col = temp_anomaly_C)) +
-  geom_rect(inherit.aes = FALSE, data = data.frame( xmin = as.POSIXct('2018-09-05'), xmax = as.POSIXct('2018-10-22'), ymin = -Inf, ymax = Inf),
+  geom_rect(inherit.aes = FALSE, data = data.frame( xmin = as.POSIXct('2018-09-09'), xmax = as.POSIXct('2018-10-22'), ymin = -Inf, ymax = Inf),
             aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = '#ede3be', alpha = 0.1, color = 'black', linetype = 2) +
   geom_point(size = 0.5) +
   geom_point(inherit.aes = F, data = data.frame(x = as.POSIXct('2018-09-02'), y = depths.west),
