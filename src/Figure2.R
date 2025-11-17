@@ -10,23 +10,26 @@ usedates = data.frame(startdate = as.POSIXct(c('2018-09-01'), tz = 'UTC')) |>
 # Read in TG GPS data from Matt
 tg = read_csv('data/gps/tylg_daily_15day-v2.csv') |> 
   select(datetime = time_mean, velocity_m_d = `velocity (m/d)`, z_median) |> 
+  mutate(velocity_m_a = velocity_m_d * 365) |> 
   filter(datetime >= as.Date('2018-05-01') & datetime <= as.Date('2019-05-01')) 
 
-range_velocity_all <- range(tg$velocity_m_d)
+range_velocity_all <- range(tg$velocity_m_a)
 range_z_all <- range(tg$z_median)
 tg <- tg %>%
   mutate(z_median_scaled = scales::rescale(z_median, to = range_velocity_all, from = range_z_all))
 
 p1 = ggplot(tg, aes(x = datetime)) +
-  geom_rect(inherit.aes = FALSE, data = data.frame( xmin = as.POSIXct('2018-09-09'), xmax = as.POSIXct('2018-10-22'), ymin = -Inf, ymax = Inf),
-            aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = '#ede3be', alpha = 0.5, color = 'black', linetype = 2, linewidth = 0.2) +
+  geom_rect(inherit.aes = FALSE, data = data.frame( xmin = as.POSIXct('2018-09-09'), xmax = as.POSIXct('2018-10-22'), 
+                                                    ymin = -Inf, ymax = Inf),
+            aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = '#ede3be', 
+            alpha = 0.5, color = 'black', linetype = 2, linewidth = 0.2) +
   # geom_line(aes(y = velocity_m_d), color = "#647587") +
   # geom_line(aes(y = z_median_scaled), color = "#a85c32") +
-  geom_point(aes(y = velocity_m_d), color = "#647587", size = 0.3) +
+  geom_point(aes(y = velocity_m_a), color = "#647587", size = 0.3) +
   geom_point(aes(y = z_median_scaled), color = "#a85c32", size = 0.3) +
   scale_y_continuous(
-    name = expression("Velocity (m d"^{-1}*")"),
-    sec.axis = sec_axis(~ scales::rescale(., to = range_z_all, from = range_velocity_all), name = "Elevation")
+    name = expression("Velocity (m a"^{-1}*")"),
+    sec.axis = sec_axis(~ scales::rescale(., to = range_z_all, from = range_velocity_all), name = "Elevation (m)")
   ) +
   scale_x_datetime(expand = c(0,0), breaks = '3 months',  labels = date_format("%b %Y")) +
   theme_bw(base_size = 8) +
@@ -39,7 +42,7 @@ p1 = ggplot(tg, aes(x = datetime)) +
 tg.date = tg |> filter(datetime >= usedates$startdate[1] & datetime <= usedates$enddate[1]) |> 
   mutate(z_diff = 1000*(z_median - z_median[1]))
 
-range_velocity <- range(tg.date$velocity_m_d)
+range_velocity <- range(tg.date$velocity_m_a)
 range_z <- range(tg.date$z_diff)
 
 tg.date <- tg.date %>%
@@ -48,10 +51,10 @@ tg.date <- tg.date %>%
 p2 = ggplot(tg.date, aes(x = datetime)) +
   geom_rect(inherit.aes = FALSE, data = data.frame( xmin = as.POSIXct('2018-09-09'), xmax = as.POSIXct('2018-10-22'), ymin = -Inf, ymax = Inf),
             aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = '#ede3be', alpha = 0.1, color = 'black', linetype = 2) +
-  geom_point(aes(y = velocity_m_d), color = "#647587", size = 0.3) +
+  geom_point(aes(y = velocity_m_a), color = "#647587", size = 0.3) +
   geom_point(aes(y = z_median_scaled), color = "#a85c32", size = 0.3) +
   scale_y_continuous(
-    name = expression("Velocity (m d"^{-1}*")"),
+    name = expression("Velocity (m a"^{-1}*")"),
     sec.axis = sec_axis(~ scales::rescale(., to = range_z, from = range_velocity), name = "Z Diff (mm)")
   ) +
   scale_x_datetime(expand = c(0,0), breaks = '2 weeks',  labels = date_format("%b %d")) +
@@ -76,7 +79,7 @@ p3 = ggplot(wlb.raw |> arrange(desc(temp_anomaly_C)), aes(x = dateTime, y = dept
   scale_y_reverse() +
   scale_x_datetime(expand = c(0,0), breaks = '2 weeks',  labels = date_format("%b %d")) +
   scale_color_gradient2(
-    low = "#292b54", mid = "#fafcc7", high = "red4", midpoint = 0,
+    low = "#33519c", mid = "#fafcc7", high = "red4", midpoint = 0,
     limits = c(-1.6, 0.5),  # Set min and max
     name = "WLB Temp Anomaly (°C)  ") + 
   labs(y = "Thermistor Depth (m)") +

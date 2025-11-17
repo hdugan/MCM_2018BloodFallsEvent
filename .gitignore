@@ -1,3 +1,5 @@
+data/gps/processed_rinex/*
+
 # History files
 .Rhistory
 .Rapp.history
